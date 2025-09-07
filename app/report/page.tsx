@@ -62,11 +62,13 @@ export default function ReportPage() {
       bankRefs,
       evidence: files.map((f, i) => ({ name: f.name, size: f.size, type: f.type, hash: hashes[i] })),
       status: 'intake',
+      email,
       messages: [
         { id: crypto.randomUUID(), from: 'system', text: 'Report submitted. An agent will be assigned in chat shortly.', at: Date.now() }
       ]
     }
     upsertCase(record)
+    setNewCaseId(id)
     try {
       const payload = {
         id,
@@ -74,6 +76,7 @@ export default function ReportPage() {
         type,
         amount,
         currency,
+        email,
         timeline,
         description,
         txHashes,
@@ -87,7 +90,7 @@ export default function ReportPage() {
     } catch (e) {
       console.warn('Formsfree submission error', e)
     }
-    router.push(`/dashboard?id=${id}&submitted=1`)
+    setShowVerify(true)
   }
 
   return (
