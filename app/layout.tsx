@@ -1,6 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { ThemeProvider } from '@/components/theme-provider'
+import dynamic from 'next/dynamic'
+const ClientThemeProvider = dynamic(() => import('@/components/theme-provider').then(m => m.ThemeProvider), { ssr: false })
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/theme-toggle'
 
@@ -13,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen">
-        <ThemeProvider>
+        <ClientThemeProvider>
           <header className="border-b border-black/5 dark:border-white/10 bg-white/70 dark:bg-slate-950/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
             <div className="container-responsive flex items-center justify-between py-4">
               <Link href="/" className="flex items-center gap-3" aria-label="Cyber Scam & Recovery Unit home">
@@ -64,7 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
             </div>
           </footer>
-        </ThemeProvider>
+        </ClientThemeProvider>
       </body>
     </html>
   )
