@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #ffffff;
+  --fg: #0b1e3a;
+  --muted: #6b7280;
+  --accent: #14b87a;
+}
+
+.dark {
+  --bg: #0a0f1a;
+  --fg: #e5e7eb;
+  --muted: #9ca3af;
+  --accent: #22c983;
+}
+
+html, body, #__next {
+  height: 100%;
+}
+
+body {
+  @apply bg-[var(--bg)] text-[var(--fg)] antialiased;
+}
+
+.container-responsive {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.button-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-md bg-brand-green px-5 py-3 font-medium text-white shadow hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 active:scale-[0.99];
+}
+
+.button-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-md border border-brand-green px-5 py-3 font-medium text-brand-green hover:bg-brand-green/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40 active:scale-[0.99];
+}
+
+.section-title {
+  @apply text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight;
+}
+
+.section-subtitle {
+  @apply text-base sm:text-lg text-[var(--muted)];
+}
+
+.card-surface {
+  @apply rounded-xl bg-white dark:bg-slate-900 shadow-card ring-1 ring-black/5 dark:ring-white/5;
+}
