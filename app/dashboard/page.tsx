@@ -3,13 +3,15 @@ import { useEffect, useMemo, useState } from 'react'
 import { loadCases, upsertCase } from '@/lib/storage'
 import type { CaseRecord, CaseStatus } from '@/types/case'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
+import { ChatPanel } from '@/components/chat-panel'
 
 function StatusBadge({ status }: { status: CaseStatus }) {
   const map = {
     intake: 'bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-slate-100',
     under_review: 'bg-yellow-100 text-yellow-900 dark:bg-yellow-900/30 dark:text-yellow-200',
-    action_recommended: 'bg-emerald-100 text-emerald-900 dark:bg-emerald-900/30 dark:text-emerald-200'
+    action_recommended: 'bg-emerald-100 text-emerald-900 dark:bg-emerald-900/30 dark:text-emerald-200',
+    closed: 'bg-slate-300 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
   } as const
   return <span className={`px-2 py-1 rounded text-xs font-medium ${map[status]}`}>{status.replace('_',' ')}</span>
 }
@@ -17,10 +19,20 @@ function StatusBadge({ status }: { status: CaseStatus }) {
 export default function DashboardPage() {
   const [cases, setCases] = useState<CaseRecord[]>([])
   const params = useSearchParams()
+  const router = useRouter()
   const focusId = params.get('id')
 
   useEffect(() => {
-    setCases(loadCases())
+    const cs = loadCases()
+    setCases(cs)
+    if (cs.length === 0) router.replace('/report?needReport=1')
+  }, [])
+
+  useEffect(() => {
+    const ch = new BroadcastChannel('csr_cases_global')
+    const onMsg = () => setCases(loadCases())
+    ch.addEventListener('message', onMsg)
+    return () => ch.removeEventListener('message', onMsg)
   }, [])
 
   const focused = useMemo(() => cases.find(c=>c.id===focusId) || null, [cases, focusId])
@@ -67,8 +79,19 @@ export default function DashboardPage() {
         <div className="lg:col-span-2 card-surface p-6">
           {!focused ? (
             <div className="text-[var(--muted)]">Select a case to view details.</div>
+          ) : focused.status==='closed' ? (
+            <div className="text-sm">
+              <div className="mb-3 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
+                This access link is closed. Your report has been closed by our team. If you believe this is an error, please contact support.
+              </div>
+            </div>
           ) : (
             <div>
+              {params.get('submitted')==='1' && (
+                <div role="status" className="mb-4 rounded-md border border-emerald-300/40 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-900 dark:text-emerald-200 px-4 py-3 text-sm">
+                  Report received. We will assign a Recovery Unit agent to this chat promptly.
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-semibold">Case Details</h2>
@@ -99,6 +122,7 @@ export default function DashboardPage() {
                       { k: 'intake', t: 'Intake received' },
                       { k: 'under_review', t: 'Under review by analyst' },
                       { k: 'action_recommended', t: 'Action recommended' },
+                      { k: 'closed', t: 'Case closed' },
                     ] as const).map((s) => (
                       <li key={s.k} className="flex items-start gap-3">
                         <span className={`mt-1 h-2.5 w-2.5 rounded-full ${focused.status===s.k || (s.k==='intake') ? 'bg-brand-green' : 'bg-slate-300 dark:bg-slate-700'}`} />
@@ -107,6 +131,9 @@ export default function DashboardPage() {
                     ))}
                   </ol>
                 </div>
+              </div>
+              <div className="mt-6">
+                <ChatPanel sender="victim" showSystemIntro record={focused} onUpdate={(c)=>{ upsertCase(c); setCases(loadCases()) }} />
               </div>
             </div>
           )}
