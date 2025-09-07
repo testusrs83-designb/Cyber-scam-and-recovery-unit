@@ -135,6 +135,10 @@ export default function ReportPage() {
                 <input value={currency} onChange={e=>setCurrency(e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2" aria-label="Currency"/>
               </div>
               <div className="sm:col-span-2">
+                <label className="block text-sm font-medium">Contact Email</label>
+                <input type="email" value={email} onChange={e=>setEmail(e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2" aria-label="Contact Email"/>
+              </div>
+              <div className="sm:col-span-2">
                 <label className="block text-sm font-medium">Timeline</label>
                 <input value={timeline} onChange={e=>setTimeline(e.target.value)} className="mt-1 w-full rounded-md border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2" aria-label="Timeline"/>
               </div>
