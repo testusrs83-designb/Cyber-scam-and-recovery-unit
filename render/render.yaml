@@ -1,0 +1,30 @@
+services:
+  - name: pgbouncer
+    type: web
+    env: private
+    plan: free
+    repo: .
+    buildCommand: docker build -t pgbouncer ./render/pgbouncer
+    startCommand: docker run -p 6432:6432 pgbouncer
+    envVars:
+      - key: RENDER_DB_HOST
+        scope: PRIVATE
+      - key: RENDER_DB_NAME
+        scope: PRIVATE
+      - key: DB_USER
+        scope: PRIVATE
+      - key: MD5_PASSWORD_HASH
+        scope: PRIVATE
+
+  - name: migration-runner
+    type: worker
+    env: private
+    plan: free
+    repo: .
+    buildCommand: docker build -t migration-runner ./render/runner
+    startCommand: docker run migration-runner
+    envVars:
+      - key: SOURCE_DATABASE_URL
+        scope: PRIVATE
+      - key: TARGET_DATABASE_URL
+        scope: PRIVATE

@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  role         String
+  mfa_enabled  Boolean  @default(false)
+  created_at   DateTime @default(now())
+  cases        Case[]   @relation("ReporterCases")
+  caseEvents   CaseEvent[] @relation("ActorEvents")
+}
+
+model Case {
+  id           Int      @id @default(autoincrement())
+  reporter_id  Int
+  type         String
+  status       String
+  loss_amount  Float
+  currency     String
+  created_at   DateTime @default(now())
+  reporter     User     @relation("ReporterCases", fields: [reporter_id], references: [id])
+  evidence     Evidence[]
+  events       CaseEvent[]
+  caseTags     CaseTag[]
+}
+
+model Evidence {
+  id           Int      @id @default(autoincrement())
+  case_id      Int
+  file_name    String
+  sha256       String
+  mime_type    String
+  storage_url  String
+  created_at   DateTime @default(now())
+  case         Case     @relation(fields: [case_id], references: [id])
+}
+
+model CaseEvent {
+  id           Int      @id @default(autoincrement())
+  case_id      Int
+  actor_id     Int
+  event_type   String
+  payload_json Json
+  created_at   DateTime @default(now())
+  case         Case     @relation(fields: [case_id], references: [id])
+  actor        User     @relation("ActorEvents", fields: [actor_id], references: [id])
+}
+
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  caseTags CaseTag[]
+}
+
+model CaseTag {
+  case_id Int
+  tag_id  Int
+  case    Case @relation(fields: [case_id], references: [id])
+  tag     Tag  @relation(fields: [tag_id], references: [id])
+  @@id([case_id, tag_id])
+}

@@ -1,0 +1,28 @@
+name: Manual Migration
+
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'Source DATABASE_URL (secret)'
+        required: true
+      target:
+        description: 'Target DATABASE_URL (secret)'
+        required: true
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: npm ci
+      - name: Run migration
+        env:
+          SOURCE_DATABASE_URL: ${{ github.event.inputs.source }}
+          TARGET_DATABASE_URL: ${{ github.event.inputs.target }}
+        run: node scripts/row_migration.js "$SOURCE_DATABASE_URL" "$TARGET_DATABASE_URL"
