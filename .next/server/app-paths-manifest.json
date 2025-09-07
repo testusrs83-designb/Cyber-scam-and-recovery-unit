@@ -1,0 +1,13 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/db/health/route": "app/api/db/health/route.js",
+  "/diagnostics/page": "app/diagnostics/page.js",
+  "/icon.svg/route": "app/icon.svg/route.js",
+  "/page": "app/page.js",
+  "/robots.txt/route": "app/robots.txt/route.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/report/page": "app/report/page.js",
+  "/reviewer/[id]/page": "app/reviewer/[id]/page.js",
+  "/reviewer/page": "app/reviewer/page.js",
+  "/admin/page": "app/admin/page.js"
+}
