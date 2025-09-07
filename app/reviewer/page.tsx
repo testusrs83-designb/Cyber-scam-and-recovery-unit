@@ -53,7 +53,7 @@ export default function ReviewerPage() {
               </div>
               <Link className="button-secondary" href={`/reviewer/${c.id}`}>Open</Link>
             </div>
-            <p className="mt-3 text-sm line-clamp-3 text-[var(--muted)]">{c.description}</p>
+            <p className="mt-3 text-sm overflow-hidden text-ellipsis text-[var(--muted)]">{c.description}</p>
           </li>
         ))}
         {filtered.length===0 && (
