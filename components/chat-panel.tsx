@@ -17,7 +17,7 @@ function useChannel(name: string | null, onMessage: (data: any) => void) {
   return { post }
 }
 
-export function ChatPanel({ record, onUpdate }:{ record: CaseRecord, onUpdate: (c: CaseRecord)=>void }) {
+export function ChatPanel({ record, onUpdate, sender = 'victim', showSystemIntro = true }:{ record: CaseRecord, onUpdate: (c: CaseRecord)=>void, sender?: 'victim'|'reviewer', showSystemIntro?: boolean }) {
   const [text, setText] = useState('')
   const [files, setFiles] = useState<File[]>([])
   const [typingAgent, setTypingAgent] = useState(false)
@@ -35,12 +35,13 @@ export function ChatPanel({ record, onUpdate }:{ record: CaseRecord, onUpdate: (
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [record.messages?.length])
 
   useEffect(() => {
+    if (!showSystemIntro) return
     if (!(record.messages||[]).some(m => m.from === 'system')) {
       const sys: ChatMessage = { id: crypto.randomUUID(), from: 'system', text: 'Thanks for your report. We will assign a Recovery Unit agent to this chat shortly.', at: Date.now() }
       const updated = { ...record, messages: [...(record.messages||[]), sys] }
       upsertCase(updated); onUpdate(updated)
     }
-  }, [])
+  }, [showSystemIntro])
 
   async function onSelectFiles(list: FileList | null) {
     if (!list) return
@@ -56,21 +57,22 @@ export function ChatPanel({ record, onUpdate }:{ record: CaseRecord, onUpdate: (
       const previewDataUrl = f.type.startsWith('image/') ? await new Promise<string>((res) => { const r = new FileReader(); r.onload = () => res(String(r.result)); r.readAsDataURL(f) }) : undefined
       attachments.push({ name: f.name, type: f.type, size: f.size, hash, previewDataUrl })
     }
-    const message: ChatMessage = { id: crypto.randomUUID(), from: 'victim', text: text.trim(), at: Date.now(), status: 'sent', attachments }
+    const message: ChatMessage = { id: crypto.randomUUID(), from: sender, text: text.trim(), at: Date.now(), status: 'sent', attachments }
     const updated = { ...record, messages: [...(record.messages||[]), message] }
     upsertCase(updated); onUpdate(updated)
     post({ type: 'message', caseId: record.id, message })
     setText(''); setFiles([])
 
-    // Simulate agent typing and quick acknowledgement
-    setTypingAgent(true); post({ type: 'typing', caseId: record.id, agent: true })
-    setTimeout(() => {
-      const reply: ChatMessage = { id: crypto.randomUUID(), from: 'reviewer', text: 'Your case is being reviewed. We will follow up shortly with next steps.', at: Date.now(), status: 'delivered' }
-      const upd2 = { ...updated, messages: [...(updated.messages||[]), reply] }
-      upsertCase(upd2); onUpdate(upd2)
-      post({ type: 'message', caseId: record.id, message: reply })
-      setTypingAgent(false); post({ type: 'typing', caseId: record.id, agent: false })
-    }, 1000)
+    if (sender === 'victim') {
+      setTypingAgent(true); post({ type: 'typing', caseId: record.id, agent: true })
+      setTimeout(() => {
+        const reply: ChatMessage = { id: crypto.randomUUID(), from: 'reviewer', text: 'Your case is being reviewed. We will follow up shortly with next steps.', at: Date.now(), status: 'delivered' }
+        const upd2 = { ...updated, messages: [...(updated.messages||[]), reply] }
+        upsertCase(upd2); onUpdate(upd2)
+        post({ type: 'message', caseId: record.id, message: reply })
+        setTypingAgent(false); post({ type: 'typing', caseId: record.id, agent: false })
+      }, 1000)
+    }
   }
 
   return (
