@@ -26,7 +26,7 @@ export default function DiagnosticsPage() {
   return (
     <main className="p-6 space-y-4">
       <h1 className="text-2xl font-semibold">Diagnostics</h1>
-      <p className="text-sm text-gray-600 dark:text-gray-300">Realtime check: frontend -> API -> Prisma -> Render Postgres</p>
+      <p className="text-sm text-gray-600 dark:text-gray-300">Realtime check: frontend → API → Prisma → Render Postgres</p>
       <div className="rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-black p-4">
         <pre className="whitespace-pre-wrap text-sm">
           {JSON.stringify(health, null, 2)}
