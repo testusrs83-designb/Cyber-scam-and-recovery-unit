@@ -1,7 +1,7 @@
 "use client"
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { ShieldCheckIcon, RocketIcon, FileTextIcon } from '@radix-ui/react-icons'
+import { CheckCircledIcon, RocketIcon, FileTextIcon } from '@radix-ui/react-icons'
 
 export default function HomePage() {
   return (
@@ -23,7 +23,7 @@ export default function HomePage() {
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
           {[
             { title: 'Submit', desc: 'Share details of the scam securely.', icon: <FileTextIcon className="h-6 w-6" /> },
-            { title: 'Review', desc: 'Experts analyze your case and evidence.', icon: <ShieldCheckIcon className="h-6 w-6" /> },
+            { title: 'Review', desc: 'Experts analyze your case and evidence.', icon: <CheckCircledIcon className="h-6 w-6" /> },
             { title: 'Action', desc: 'We guide actions to recover and prevent.', icon: <RocketIcon className="h-6 w-6" /> },
           ].map((s, i) => (
             <motion.div key={s.title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="card-surface p-6">
@@ -73,7 +73,7 @@ export default function HomePage() {
       <section className="py-14">
         <div className="container-responsive card-surface px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-xl sm:text-2xl font-semibold">Lost funds? Don’t wait — report now.</h3>
+            <h3 className="text-xl sm:text-2xl font-semibold">Lost funds? Don’t wait �� report now.</h3>
             <p className="mt-1 text-[var(--muted)]">Faster reporting increases recovery chances.</p>
           </div>
           <Link href="/report" className="button-primary">Report a Case</Link>
