@@ -4,7 +4,6 @@ import { loadCases, upsertCase } from '@/lib/storage'
 import type { CaseRecord, CaseStatus } from '@/types/case'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
 
 function StatusBadge({ status }: { status: CaseStatus }) {
   const map = {
