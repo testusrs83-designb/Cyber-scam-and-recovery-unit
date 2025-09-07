@@ -2,7 +2,6 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import Link from 'next/link'
-import { MoonIcon, SunIcon } from '@radix-ui/react-icons'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 export const metadata: Metadata = {
