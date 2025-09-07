@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { loadCases, upsertCase } from '@/lib/storage'
 import type { CaseRecord, CaseStatus } from '@/types/case'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { ChatPanel } from '@/components/chat-panel'
 
 function StatusBadge({ status }: { status: CaseStatus }) {
