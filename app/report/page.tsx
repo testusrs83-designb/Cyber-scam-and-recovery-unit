@@ -222,6 +222,44 @@ export default function ReportPage() {
           )}
         </div>
       </div>
+      {showVerify && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4">
+          <div role="dialog" aria-modal className="w-full max-w-lg card-surface p-6">
+            {progressStage==='idle' && (
+              <div>
+                <h3 className="text-lg font-semibold">Almost there — verify your email</h3>
+                <p className="mt-1 text-sm text-[var(--muted)]">We sent a 6‑digit code to your email. Enter it below to continue.</p>
+                <div className="mt-4 flex items-center gap-2">
+                  <input inputMode="numeric" pattern="\\d*" maxLength={6} value={otp} onChange={e=>setOtp(e.target.value.replace(/[^0-9]/g,''))} className="flex-1 rounded-md border border-slate-300 dark:border-slate-700 bg-transparent px-3 py-2 tracking-widest text-center" aria-label="Email verification code" />
+                  <button disabled={otp.length!==6 || verifying} onClick={()=>{ setVerifying(true); setTimeout(()=>{ setVerifying(false); setProgressStage('processing') }, 800) }} className="button-primary disabled:opacity-50">Verify</button>
+                </div>
+                <p className="mt-2 text-xs text-[var(--muted)]">Didn’t receive the code? Check your spam folder.</p>
+              </div>
+            )}
+            {progressStage==='processing' && (
+              <div>
+                <h3 className="text-lg font-semibold">Setting things up</h3>
+                <ul className="mt-4 space-y-2 text-sm">
+                  <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-brand-green animate-pulse"/> Verifying details…</li>
+                  <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-brand-green animate-pulse"/> Analyzing report…</li>
+                  <li className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-brand-green animate-pulse"/> Creating dashboard…</li>
+                </ul>
+                {setTimeout(()=> setProgressStage('done'), 1800) as any}
+              </div>
+            )}
+            {progressStage==='done' && (
+              <div>
+                <h3 className="text-lg font-semibold">What happens next</h3>
+                <p className="mt-2 text-sm text-[var(--muted)]">Your Dashboard access portal will be delivered to your verified email address within the next 30 minutes. You’ll also receive a welcome email within 5 minutes containing your unique access link.</p>
+                <div className="mt-4 flex items-center gap-2">
+                  <a href={newCaseId ? `/dashboard?id=${newCaseId}` : '#'} className="button-primary">Open dashboard now</a>
+                  <button onClick={()=> setShowVerify(false)} className="button-secondary">Close</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
