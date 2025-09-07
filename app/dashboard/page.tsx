@@ -4,6 +4,7 @@ import { loadCases, upsertCase } from '@/lib/storage'
 import type { CaseRecord, CaseStatus } from '@/types/case'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import { ChatPanel } from '@/components/chat-panel'
 
 function StatusBadge({ status }: { status: CaseStatus }) {
   const map = {
@@ -69,6 +70,11 @@ export default function DashboardPage() {
             <div className="text-[var(--muted)]">Select a case to view details.</div>
           ) : (
             <div>
+              {params.get('submitted')==='1' && (
+                <div role="status" className="mb-4 rounded-md border border-emerald-300/40 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-900 dark:text-emerald-200 px-4 py-3 text-sm">
+                  Report received. We will assign a Recovery Unit agent to this chat promptly.
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-xl font-semibold">Case Details</h2>
@@ -107,6 +113,9 @@ export default function DashboardPage() {
                     ))}
                   </ol>
                 </div>
+              </div>
+              <div className="mt-6">
+                <ChatPanel record={focused} onUpdate={(c)=>{ upsertCase(c); setCases(loadCases()) }} />
               </div>
             </div>
           )}
