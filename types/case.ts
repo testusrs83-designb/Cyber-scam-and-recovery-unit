@@ -1,5 +1,5 @@
 export type ScamType = 'crypto' | 'fiat' | 'other'
-export type CaseStatus = 'intake' | 'under_review' | 'action_recommended'
+export type CaseStatus = 'intake' | 'under_review' | 'action_recommended' | 'closed'
 
 export interface EvidenceItem {
   name: string
@@ -18,6 +18,7 @@ export interface CaseRecord {
   type: ScamType
   amount: number
   currency: string
+  email?: string
   timeline: string
   description: string
   txHashes: string[]

@@ -68,6 +68,7 @@ export default function AdminPage() {
                   <option value="intake">intake</option>
                   <option value="under_review">under_review</option>
                   <option value="action_recommended">action_recommended</option>
+                  <option value="closed">closed</option>
                 </select>
               </li>
             ))}

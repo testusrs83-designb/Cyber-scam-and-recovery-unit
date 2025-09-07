@@ -10,7 +10,8 @@ function StatusBadge({ status }: { status: CaseStatus }) {
   const map = {
     intake: 'bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-slate-100',
     under_review: 'bg-yellow-100 text-yellow-900 dark:bg-yellow-900/30 dark:text-yellow-200',
-    action_recommended: 'bg-emerald-100 text-emerald-900 dark:bg-emerald-900/30 dark:text-emerald-200'
+    action_recommended: 'bg-emerald-100 text-emerald-900 dark:bg-emerald-900/30 dark:text-emerald-200',
+    closed: 'bg-slate-300 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
   } as const
   return <span className={`px-2 py-1 rounded text-xs font-medium ${map[status]}`}>{status.replace('_',' ')}</span>
 }
@@ -78,6 +79,12 @@ export default function DashboardPage() {
         <div className="lg:col-span-2 card-surface p-6">
           {!focused ? (
             <div className="text-[var(--muted)]">Select a case to view details.</div>
+          ) : focused.status==='closed' ? (
+            <div className="text-sm">
+              <div className="mb-3 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4">
+                This access link is closed. Your report has been closed by our team. If you believe this is an error, please contact support.
+              </div>
+            </div>
           ) : (
             <div>
               {params.get('submitted')==='1' && (
@@ -115,6 +122,7 @@ export default function DashboardPage() {
                       { k: 'intake', t: 'Intake received' },
                       { k: 'under_review', t: 'Under review by analyst' },
                       { k: 'action_recommended', t: 'Action recommended' },
+                      { k: 'closed', t: 'Case closed' },
                     ] as const).map((s) => (
                       <li key={s.k} className="flex items-start gap-3">
                         <span className={`mt-1 h-2.5 w-2.5 rounded-full ${focused.status===s.k || (s.k==='intake') ? 'bg-brand-green' : 'bg-slate-300 dark:bg-slate-700'}`} />
