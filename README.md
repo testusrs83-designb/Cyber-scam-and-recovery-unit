@@ -13,3 +13,18 @@ Features:
 - User Dashboard with status, evidence hashes, timeline
 - Reviewer Dashboard with filters, classification, messaging
 - Dark mode and accessible components
+
+Backend (NestJS + Prisma)
+
+To run the backend locally:
+
+```bash
+cd backend
+cp .env.example .env
+# update .env DATABASE_URL to point at your Postgres
+npm install
+npx prisma generate
+npm run start:dev
+```
+
+The backend exposes an API under the /api prefix and Swagger UI at /api-docs.

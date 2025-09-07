@@ -13,6 +13,11 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   }
 
   async onModuleInit() {
+    // Enforce usage of Render internal database URL
+    if (process.env.DATABASE_URL !== process.env.RENDER_DATABASE_URL) {
+      this.logger.error("DATABASE_URL must be equal to the Render internal DB URL (RENDER_DATABASE_URL)");
+      throw new Error("Invalid DATABASE_URL. Use Render internal DB URL.");
+    }
     for (let attempt = 1; attempt <= this.retryAttempts; attempt++) {
       try {
         await this.$connect();
