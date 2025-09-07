@@ -18,10 +18,20 @@ function StatusBadge({ status }: { status: CaseStatus }) {
 export default function DashboardPage() {
   const [cases, setCases] = useState<CaseRecord[]>([])
   const params = useSearchParams()
+  const router = useRouter()
   const focusId = params.get('id')
 
   useEffect(() => {
-    setCases(loadCases())
+    const cs = loadCases()
+    setCases(cs)
+    if (cs.length === 0) router.replace('/report?needReport=1')
+  }, [])
+
+  useEffect(() => {
+    const ch = new BroadcastChannel('csr_cases_global')
+    const onMsg = () => setCases(loadCases())
+    ch.addEventListener('message', onMsg)
+    return () => ch.removeEventListener('message', onMsg)
   }, [])
 
   const focused = useMemo(() => cases.find(c=>c.id===focusId) || null, [cases, focusId])
@@ -115,7 +125,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <div className="mt-6">
-                <ChatPanel record={focused} onUpdate={(c)=>{ upsertCase(c); setCases(loadCases()) }} />
+                <ChatPanel sender="victim" showSystemIntro record={focused} onUpdate={(c)=>{ upsertCase(c); setCases(loadCases()) }} />
               </div>
             </div>
           )}
