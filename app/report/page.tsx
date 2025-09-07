@@ -4,6 +4,7 @@ import * as Progress from '@radix-ui/react-progress'
 import { motion, AnimatePresence } from 'framer-motion'
 import { sha256OfFile } from '@/lib/hash'
 import { upsertCase } from '@/lib/storage'
+import { submitToFormsfree } from '@/lib/formsfree'
 import type { CaseRecord, ScamType } from '@/types/case'
 import { useRouter } from 'next/navigation'
 
@@ -41,7 +42,7 @@ export default function ReportPage() {
   function next() { setStep(s => Math.min(s + 1, steps.length - 1)) }
   function prev() { setStep(s => Math.max(s - 1, 0)) }
 
-  function submit() {
+  async function submit() {
     const id = crypto.randomUUID()
     const record: CaseRecord = {
       id,
@@ -55,10 +56,32 @@ export default function ReportPage() {
       bankRefs,
       evidence: files.map((f, i) => ({ name: f.name, size: f.size, type: f.type, hash: hashes[i] })),
       status: 'intake',
-      messages: []
+      messages: [
+        { id: crypto.randomUUID(), from: 'system', text: 'Report submitted. An agent will be assigned in chat shortly.', at: Date.now() }
+      ]
     }
     upsertCase(record)
-    router.push(`/dashboard?id=${id}`)
+    try {
+      const payload = {
+        id,
+        createdAt: new Date(record.createdAt).toISOString(),
+        type,
+        amount,
+        currency,
+        timeline,
+        description,
+        txHashes,
+        bankRefs,
+        evidence: record.evidence,
+      }
+      const res = await submitToFormsfree(payload)
+      if (!res.ok) {
+        console.warn('Formsfree submission failed or endpoint missing', res.status)
+      }
+    } catch (e) {
+      console.warn('Formsfree submission error', e)
+    }
+    router.push(`/dashboard?id=${id}&submitted=1`)
   }
 
   return (
