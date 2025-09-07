@@ -1,0 +1,28 @@
+rules:
+  - id: disable-minified-js
+    message: "Minified JS in repo; ensure not committing built assets."
+    languages: [javascript, typescript]
+    severity: INFO
+    pattern: /min\.js$
+    paths:
+      include:
+        - "**/*.min.js"
+  - id: node-dangerous-eval
+    message: "Avoid eval and Function constructor."
+    languages: [javascript, typescript]
+    severity: WARNING
+    patterns:
+      - pattern: eval(...)
+      - pattern-either:
+          - pattern: new Function(...)
+  - id: insecure-http
+    message: "Use HTTPS URLs for network calls."
+    languages: [javascript, typescript]
+    severity: WARNING
+    pattern: "http://"
+    paths:
+      exclude:
+        - "**/*.md"
+
+# Use Semgrep-managed rulesets
+# Additional rulesets are pulled by the action when configured via --config
