@@ -1,6 +1,6 @@
 const ADMIN_TOKEN_KEY = 'csr_admin_token'
-const FIXED_EMAIL = 'super@admin.com'
-const FIXED_PWD = 'Admin001'
+const ENV_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL || ''
+const ENV_PWD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || ''
 
 export function isAdminAuthed(): boolean {
   if (typeof window === 'undefined') return false
@@ -8,7 +8,8 @@ export function isAdminAuthed(): boolean {
 }
 
 export function loginAdmin(email: string, password: string): boolean {
-  if (email === FIXED_EMAIL && password === FIXED_PWD) {
+  if (!ENV_EMAIL || !ENV_PWD) return false
+  if (email === ENV_EMAIL && password === ENV_PWD) {
     localStorage.setItem(ADMIN_TOKEN_KEY, 'ok')
     return true
   }
