@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 const ClientThemeProvider = dynamic(() => import('@/components/theme-provider').then(m => m.ThemeProvider), { ssr: false })
+const RouteTransition = dynamic(() => import('@/components/route-transition').then(m => m.RouteTransition), { ssr: false })
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/theme-toggle'
 
