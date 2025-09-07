@@ -52,12 +52,12 @@ model Evidence {
 model CaseEvent {
   id           Int      @id @default(autoincrement())
   case_id      Int
-  actor_id     Int
+  actor_id     Int?
   event_type   String
   payload_json Json
   created_at   DateTime @default(now())
   case         Case     @relation(fields: [case_id], references: [id])
-  actor        User     @relation("ActorEvents", fields: [actor_id], references: [id])
+  actor        User?    @relation("ActorEvents", fields: [actor_id], references: [id], onDelete: SetNull)
 }
 
 model Tag {

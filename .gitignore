@@ -1,3 +1,11 @@
+node_modules/
+.next/
+dist/
+/.env
+/backend/.env
+/generated/
+/*.log
+/*.tgz
 node_modules
 node_modules
 
