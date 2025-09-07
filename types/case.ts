@@ -8,6 +8,10 @@ export interface EvidenceItem {
   hash: string
 }
 
+export type MessageStatus = 'sent' | 'delivered' | 'read'
+export interface ChatAttachment { name: string; type: string; size: number; hash?: string; previewDataUrl?: string }
+export interface ChatMessage { id: string; from: 'victim' | 'reviewer' | 'system'; text: string; at: number; status?: MessageStatus; attachments?: ChatAttachment[] }
+
 export interface CaseRecord {
   id: string
   createdAt: number
@@ -21,5 +25,5 @@ export interface CaseRecord {
   evidence: EvidenceItem[]
   status: CaseStatus
   classification?: string
-  messages?: { from: 'victim' | 'reviewer'; text: string; at: number }[]
+  messages?: ChatMessage[]
 }
