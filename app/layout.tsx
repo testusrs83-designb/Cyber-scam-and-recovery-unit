@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </header>
           <main>{children}</main>
           {/* Route transition overlay */}
-          {typeof window !== 'undefined' ? require('@/components/route-transition').RouteTransition({}) : null}
+          <RouteTransition />
           <footer className="mt-16 border-t border-black/5 dark:border-white/10">
             <div className="container-responsive py-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 text-sm">
               <div className="col-span-2">
